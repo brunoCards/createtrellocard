@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import useForm from '../../hooks/useForm';
+import { api as Api } from '../../services/api';
 import { initialState } from '../../services/initialState';
 import Checkbox from '../Checkbox';
 import Select from '../Select';
@@ -7,7 +8,6 @@ import { Form, Input, LabelForm, SubmitButton, TextArea } from './styles';
 import { SelectOption } from '../Select/styles';
 import TagsComponent from '../Tags';
 import { TagsListItem } from '../Tags/styles';
-import axios from 'axios';
 
 const FormComponent = () => {
   const [form, setForm, handleChangeInput] = useForm(initialState);
@@ -25,23 +25,20 @@ const FormComponent = () => {
     'web design',
   ]);
 
-  const baseUrl = 'https://api.trello.com/1/cards?';
-
-  const handleToSubmit = (event) => {
+  const handleToSubmit = async (event) => {
     event.preventDefault();
-    const body = {
-      name: form.name,
-      email: form.email,
-      description: form.description,
-    };
 
-    const response = axios
-      .post(
-        `${baseUrl}
-        ${process.env.REACT_APP_CARDS_API_KEY}
-        ${process.env.REACT_APP_CARDS_API_TOKEN}`,
-        body
-      )
+    const idList = '601fedca5cbdfd5aba34d3ba';
+
+    const response = await Api.post(
+      '/1/cards/?key=' +
+        process.env.REACT_APP_CARDS_API_KEY +
+        '&token=' +
+        process.env.REACT_APP_CARDS_API_TOKEN +
+        '&idList=' +
+        idList,
+      form
+    )
       .then((response) => {
         console.log(response);
       })
@@ -49,7 +46,7 @@ const FormComponent = () => {
         console.log(error);
       });
   };
-
+  console.log(form);
   return (
     <>
       <Form onSubmit={handleToSubmit}>
@@ -73,8 +70,8 @@ const FormComponent = () => {
         />
         <TextArea
           placeholder="Escreva uma descrição"
-          name="description"
-          value={form.description}
+          name="desc"
+          value={form.desc}
           onChange={handleChangeInput}
         />
         <Checkbox label="Opção 1" id="opcao1" />

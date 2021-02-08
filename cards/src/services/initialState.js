@@ -1,8 +1,10 @@
 export const initialState = {
   name: '',
   email: '',
-  description: '',
-  checkItem: 0,
+  desc: '',
+  checkItemStates: [],
   labels: [],
-  color: '',
+  cover: {
+    color: '',
+  },
 };
